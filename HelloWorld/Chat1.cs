@@ -1,15 +1,13 @@
-﻿using System;
-using Azure;
-using Azure.AI.Projects;
+﻿using Azure.AI.Projects;
 using Azure.Identity;
 using Azure.AI.Inference;
 using Microsoft.Extensions.Configuration;
 
 namespace HelloWorld
 {
-    class Chat1
+    public class Chat1
     {
-        public static void Run()
+        public static async Task Run()
         {
             try
             {
@@ -26,22 +24,40 @@ namespace HelloWorld
                 // Get a chat client
                 ChatCompletionsClient chatClient = projectClient.GetChatCompletionsClient();
 
-                // Get a chat completion based on a user-provided prompt
-                Console.WriteLine("Enter a question:");
-                var user_prompt = Console.ReadLine();
-
-                var requestOptions = new ChatCompletionsOptions()
+                Console.WriteLine("Press 'q' to quit or any other key to continue...");
+                do
                 {
-                    Model = "Ministral-3B",
-                    Messages =
+                    Console.WriteLine("Enter a question:");
+                    var user_prompt = Console.ReadLine();
+                    if (user_prompt == "q" || user_prompt == "Q")
+                    {
+                        break;
+                    }
+
+                    var requestOptions = new ChatCompletionsOptions()
+                    {
+                        Model = "Ministral-3B",
+                        Messages =
                         {
                             new ChatRequestSystemMessage("You are a helpful AI assistant that answers questions."),
                             new ChatRequestUserMessage(user_prompt),
                         }
-                };
+                    };
 
-                Response<ChatCompletions> response = chatClient.Complete(requestOptions);
-                Console.WriteLine(response.Value.Content);
+                    //Response<ChatCompletions> response = chatClient.Complete(requestOptions);
+                    //Console.WriteLine(response.Value.Content);
+
+                    StreamingResponse<StreamingChatCompletionsUpdate> response = await chatClient.CompleteStreamingAsync(requestOptions);
+                    await foreach (StreamingChatCompletionsUpdate chatUpdate in response)
+                    {
+                        if (!string.IsNullOrEmpty(chatUpdate.ContentUpdate))
+                        {
+                            Console.Write(chatUpdate.ContentUpdate);
+                        }
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine();
+                } while (true);
             }
             catch (Exception ex)
             {
