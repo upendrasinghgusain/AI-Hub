@@ -10,8 +10,8 @@ namespace ChatApp
     {
         public async Task Run()
         {
-            // Replace with your values
-            string userPrompt = "How do I handle quote errors? How frequent they are in the last 2 days?";
+            Console.WriteLine("Welcome to the AI Chat App! Please enter your question or prompt below:");
+            string userPrompt = Console.ReadLine();
 
             var configuration = new ConfigurationBuilder()
                   .AddUserSecrets<Chatter>()

@@ -20,7 +20,8 @@ namespace Pipeline
 
             string query = @"
                 AppExceptions
-                | top 10 by TimeGenerated";
+                | where TimeGenerated > ago(1h)
+                | limit 10";
 
             Response<LogsQueryResult> logsQueryResponse = client.QueryWorkspace(_workspaceId, query, QueryTimeRange.All);
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -18,14 +19,11 @@ public class QuotesController : ControllerBase
 
         try
         {
-            // Simulate a random failure
-            if (quote.CustomerName.ToLower().Contains("fail"))
+            if (new Random().NextDouble() < 0.5)
             {
-                throw new InvalidOperationException("Simulated quote failure due to invalid customer name.");
+                // Simulate service unavailability like HttpClient
+                throw new HttpRequestException("No connection could be made because the target machine actively refused it.");
             }
-
-            quote.Id = new Random().Next(1000, 9999);
-            quote.Premium = CalculatePremium(quote.CustomerName);
 
             _logger.LogInformation("Successfully created quote: {@Quote}", quote);
 
@@ -36,12 +34,6 @@ public class QuotesController : ControllerBase
             _logger.LogError(ex, "Failed to create quote for customer: {CustomerName}", quote.CustomerName);
             return StatusCode(500, new { error = "Quote creation failed", details = ex.Message });
         }
-    }
-
-    private decimal CalculatePremium(string customerName)
-    {
-        // Simulate logic
-        return customerName.Length * 1.5m;
     }
 }
 
