@@ -41,15 +41,15 @@ namespace AzureSearchIntegration
 
         public async Task<List<string>> SearchInAzureAISearch(float[] embedding)
         {
-            var options = new SearchOptions
-            {
-                VectorSearch = new VectorSearchOptions
+            SearchResults<LogEntry> response = await _searchClient.SearchAsync<LogEntry>(
+                new SearchOptions
                 {
-                    Queries = { new VectorizedQuery(embedding) { KNearestNeighborsCount = 3, Fields = { "contentVector" } } }
-                }
-            };
+                    VectorSearch = new()
+                    {
+                        Queries = { new VectorizedQuery(embedding) { KNearestNeighborsCount = 3, Fields = { "contentVector" } } }
+                    }
+                });
 
-            SearchResults<LogEntry> response = await _searchClient.SearchAsync<LogEntry>("*", options);
             List<string> results = new List<string>();
 
             await foreach (SearchResult<LogEntry> result in response.GetResultsAsync())

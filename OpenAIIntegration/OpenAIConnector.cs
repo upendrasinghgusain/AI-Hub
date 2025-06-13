@@ -1,4 +1,6 @@
-﻿using OpenAI.Embeddings;
+﻿using OpenAI.Chat;
+using OpenAI.Embeddings;
+using System.ClientModel;
 
 namespace OpenAIIntegration
 {
@@ -17,6 +19,28 @@ namespace OpenAIIntegration
             OpenAIEmbedding embedding = client.GenerateEmbedding(text);
 
             return embedding.ToFloats().ToArray();
+        }
+
+        public async Task GetChtCompletion(string context, string userPrompt)
+        {
+            ChatClient client = new(model: "gpt-4o", apiKey: _apiKey);
+
+            List<ChatMessage> messages =
+            [
+                new SystemChatMessage("You are an AI assistant helping diagnose production issues using logs."),
+                new UserChatMessage($"Here are some log entries:\n{context}\n\nBased on these logs, {userPrompt}"),
+            ];
+
+
+            AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync(messages);
+
+            await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
+            {
+                if (completionUpdate.ContentUpdate.Count > 0)
+                {
+                    Console.Write(completionUpdate.ContentUpdate[0].Text);
+                }
+            }
         }
     }
 }

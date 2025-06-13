@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
-using OpenAI.Chat;
 using OpenAIIntegration;
 using AzureSearchIntegration;
-using System.ClientModel;
 
 namespace ChatApp
 {
@@ -20,8 +18,8 @@ namespace ChatApp
             // ===============================
             // 1. Embed the user prompt
             // ===============================
-
-            var embedding = new OpenAIConnector(configuration["OPENAI_API_KEY"]).GetEmbedding(userPrompt);
+            var openAIConnector = new OpenAIConnector(configuration["OPENAI_API_KEY"]);
+            var embedding = openAIConnector.GetEmbedding(userPrompt);
 
             // ===============================
             // 2. Query Azure AI Search
@@ -30,23 +28,14 @@ namespace ChatApp
             var searchResults = await new SearchConnector(configuration["Azure_Search_Index_URI"], configuration["Azure_Search_Index_Key"])
                 .SearchInAzureAISearch(embedding);
 
-             // ===============================
-             // 3. Send results to OpenAI chat
-             // ===============================
+            // ===============================
+            // 3. Send results to OpenAI chat
+            // ===============================
 
-             var retrievedContext = string.Join("\n---\n", searchResults);
+            var retrievedContext = string.Join("\n---\n", searchResults);
+            await openAIConnector.GetChtCompletion(retrievedContext, userPrompt);
 
-            ChatClient client = new(model: "o3-mini", apiKey: configuration["OPENAI_API_KEY"]);
-
-            AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync(retrievedContext);
-
-            await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
-            {
-                if (completionUpdate.ContentUpdate.Count > 0)
-                {
-                    Console.Write(completionUpdate.ContentUpdate[0].Text);
-                }
-            }
+            Console.WriteLine("\n\n\n");
         }
     }
 }

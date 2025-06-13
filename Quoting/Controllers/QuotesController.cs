@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Quoting;
 using System;
 
 [ApiController]
@@ -13,20 +14,13 @@ public class QuotesController : ControllerBase
     }
 
     [HttpPost("create")]
-    public IActionResult CreateQuote([FromBody] Quote quote)
+    public async Task<IActionResult> CreateQuote([FromBody] Quote quote)
     {
         _logger.LogInformation("Received quote request for customer: {CustomerName}", quote.CustomerName);
 
         try
         {
-            if (new Random().NextDouble() < 0.5)
-            {
-                // Simulate service unavailability like HttpClient
-                throw new HttpRequestException("No connection could be made because the target machine actively refused it.");
-            }
-
-            _logger.LogInformation("Successfully created quote: {@Quote}", quote);
-
+            await new PricingService().GetPriceAsync();
             return Ok(quote);
         }
         catch (Exception ex)
