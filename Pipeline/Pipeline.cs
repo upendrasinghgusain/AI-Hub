@@ -14,7 +14,7 @@ namespace Pipeline
                    .Build();
         }
 
-        public void Run()
+        public async Task Run()
         {
             var logs = new LogAnalyticsHandler(_configuration["Log_Analytics_Workspace_Id"]).RunQuery();
 
@@ -22,10 +22,9 @@ namespace Pipeline
 
             var embedding = new OpenAIConnector(_configuration["OPENAI_API_KEY"]).GetEmbedding(testLog);
 
-            //// STEP 3: Upload to Azure AI Search
+            var azureSearchHandler = new AzureAISearchHandler(_configuration["Azure_Search_Index_URI"], _configuration["Azure_Search_Index_Key"]);
+            await azureSearchHandler.UploadToAzureAISearch(logs.First(), embedding);
         }
-
     }
-
 }
 
