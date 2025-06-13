@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AzureSearchIntegration\AzureSearchIntegration.csproj" />
     <ProjectReference Include="..\OpenAIIntegration\OpenAIIntegration.csproj" />
   </ItemGroup>
 

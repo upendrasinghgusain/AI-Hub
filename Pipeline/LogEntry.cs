@@ -14,6 +14,5 @@
             return $"{TimeGenerated:O} [{SeverityLevel}] {OperationName}: {Message} ({ExceptionType})";
         }
     }
-
 }
 

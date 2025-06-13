@@ -1,0 +1,116 @@
+{
+  "@odata.etag": "\"0x8DDAA7F2C2A2492\"",
+  "name": "my-vector-index",
+  "fields": [
+    {
+      "name": "id",
+      "type": "Edm.String",
+      "searchable": false,
+      "filterable": true,
+      "retrievable": true,
+      "stored": true,
+      "sortable": true,
+      "facetable": true,
+      "key": true,
+      "synonymMaps": []
+    },
+    {
+      "name": "content",
+      "type": "Edm.String",
+      "searchable": true,
+      "filterable": true,
+      "retrievable": true,
+      "stored": true,
+      "sortable": true,
+      "facetable": true,
+      "key": false,
+      "synonymMaps": []
+    },
+    {
+      "name": "contentVector",
+      "type": "Collection(Edm.Single)",
+      "searchable": true,
+      "filterable": false,
+      "retrievable": false,
+      "stored": true,
+      "sortable": false,
+      "facetable": false,
+      "key": false,
+      "dimensions": 1536,
+      "vectorSearchProfile": "vector-profile-hnsw-scalar",
+      "synonymMaps": []
+    }
+  ],
+  "scoringProfiles": [],
+  "suggesters": [],
+  "analyzers": [],
+  "normalizers": [],
+  "tokenizers": [],
+  "tokenFilters": [],
+  "charFilters": [],
+  "similarity": {
+    "@odata.type": "#Microsoft.Azure.Search.BM25Similarity"
+  },
+  "vectorSearch": {
+    "algorithms": [
+      {
+        "name": "hnsw-1",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "metric": "cosine",
+          "m": 4,
+          "efConstruction": 400,
+          "efSearch": 500
+        }
+      },
+      {
+        "name": "hnsw-2",
+        "kind": "hnsw",
+        "hnswParameters": {
+          "metric": "hamming",
+          "m": 8,
+          "efConstruction": 800,
+          "efSearch": 800
+        }
+      },
+      {
+        "name": "eknn",
+        "kind": "exhaustiveKnn",
+        "exhaustiveKnnParameters": {
+          "metric": "euclidean"
+        }
+      }
+    ],
+    "profiles": [
+      {
+        "name": "vector-profile-hnsw-scalar",
+        "algorithm": "hnsw-1",
+        "compression": "scalar-quantization"
+      }
+    ],
+    "vectorizers": [],
+    "compressions": [
+      {
+        "name": "scalar-quantization",
+        "kind": "scalarQuantization",
+        "scalarQuantizationParameters": {
+          "quantizedDataType": "int8"
+        },
+        "rescoringOptions": {
+          "enableRescoring": true,
+          "defaultOversampling": 10,
+          "rescoreStorageMethod": "preserveOriginals"
+        }
+      },
+      {
+        "name": "binary-quantization",
+        "kind": "binaryQuantization",
+        "rescoringOptions": {
+          "enableRescoring": true,
+          "defaultOversampling": 10,
+          "rescoreStorageMethod": "preserveOriginals"
+        }
+      }
+    ]
+  }
+}
