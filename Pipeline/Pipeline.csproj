@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>b714bdb4-d9f4-410c-ad6b-af9d08067928</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.Core" Version="1.46.2" />
+    <PackageReference Include="Azure.Identity" Version="1.14.0" />
+    <PackageReference Include="Azure.Monitor.Query" Version="1.6.0" />
+    <PackageReference Include="Azure.Search.Documents" Version="11.7.0-beta.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="OpenAI" Version="2.2.0-beta.4" />
+    <PackageReference Include="System.Text.Json" Version="9.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenAIConnector\OpenAIIntegration.csproj" />
+    <ProjectReference Include="..\OpenAIIntegration\OpenAIIntegration.csproj" />
+  </ItemGroup>
+
+</Project>

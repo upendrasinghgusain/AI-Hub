@@ -1,10 +1,10 @@
-﻿namespace HelloWorld
+﻿namespace ChatApp
 {
     internal class Program
     {
         static async Task Main(string[] args)
         {
-            await Chat1.Run();
+            await new Chatter().Run();
         }
     }
 }
